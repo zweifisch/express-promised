@@ -6,10 +6,11 @@ getRouter = (options)->
             original = router[method].bind router
             router[method] = (args..., handler)->
                 original args..., (req, res, next)->
-                    if ret = handler req, res, next
-                        ret.then? (result)->
-                            res.send result
-                        .catch next
+                    Promise.resolve().then ->
+                        handler req, res, next
+                    .then (result)->
+                        res.send result
+                    .catch next
     router
 
 module.exports = getRouter
